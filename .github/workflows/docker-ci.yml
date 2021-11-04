@@ -1,0 +1,27 @@
+name: "Build&Deploy telegraf images"
+
+on:
+  # Trigger the workflow on push or pull request
+  # but only for the main branch
+  # or on tag of type v*.*.*
+  push:
+    branches:
+      - main
+    tags:
+      - 'v*.*.*'
+  pull_request:
+    branches:
+      - main
+  # on:
+  #   release:
+  #     types: [released]
+jobs:
+  telegraf:
+    uses: MOV-AI/.github/.github/workflows/docker-workflow.yml@main
+    with:
+      docker_file: melod.ic/Dockerfile
+      docker_image: registry.cloud.mov.ai/devops/telegraf
+      github_ref: ${{ github.ref }}
+    secrets:
+      registry_user: ${{ secrets.PORTUS_APP_USER }}
+      registry_password: ${{ secrets.PORTUS_APP_TOKEN }}
