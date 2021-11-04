@@ -19,7 +19,7 @@ jobs:
   telegraf:
     uses: MOV-AI/.github/.github/workflows/docker-workflow.yml@main
     with:
-      docker_file: melod.ic/Dockerfile
+      docker_file: ./Dockerfile
       docker_image: registry.cloud.mov.ai/devops/telegraf
       github_ref: ${{ github.ref }}
     secrets:
