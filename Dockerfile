@@ -8,5 +8,6 @@ LABEL movai="telegraf"
 LABEL environment="develop"
 
 COPY files/telegraf.conf /etc/telegraf/telegraf.conf
+COPY files/entrypoint.sh /entrypoint.sh
 
 # Rest is upstream
