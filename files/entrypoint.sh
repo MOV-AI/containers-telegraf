@@ -12,7 +12,7 @@ fi
 
 if [ "$enable_plugin" == "true" ] && ! grep linux_cpu /etc/telegraf/telegraf.conf -q; then
     # Include the configuration for the [[inputs.linux_cpu]] plugin
-    cat <<EOF > /etc/telegraf/telegraf.conf
+    cat <<EOF >> /etc/telegraf/telegraf.conf
 
 [[inputs.linux_cpu]]
   host_sys = "/hostfs/sys"
