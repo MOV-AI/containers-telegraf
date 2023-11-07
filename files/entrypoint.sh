@@ -10,7 +10,7 @@ else
     enable_plugin=false
 fi
 
-if [ "$enable_plugin" == "true" ]; then
+if [ "$enable_plugin" == "true" ] && ! grep linux_cpu /etc/telegraf/telegraf.conf -q; then
     # Include the configuration for the [[inputs.linux_cpu]] plugin
     cat <<EOF > /etc/telegraf/telegraf.conf
 
