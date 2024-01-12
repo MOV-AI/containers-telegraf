@@ -21,7 +21,6 @@ jobs:
     with:
       docker_file: ./Dockerfile
       docker_image: qa/telegraf
-      github_ref: ${{ github.ref }}
       deploy: ${{ contains(github.ref, 'refs/heads/main') || contains(github.ref, 'refs/tags/v')}}
       version: ${GITHUB_REF##*/}
       push_latest: ${{ contains(github.ref, 'refs/heads/main') || contains(github.ref, 'refs/tags/v') }}
