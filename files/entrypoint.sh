@@ -30,12 +30,9 @@ fi
 
 metrics=""
 if [ "$enable_plugin_cpufreq" = "true" ]; then
-    metrics="cpufreq"
+    metrics="\"cpufreq\""
 fi
 if [ "$enable_plugin_thermalthrottle" = "true" ]; then
-    if [ -n "$metrics" ]; then
-        metrics="\"$metrics\""
-    fi
     metrics="${metrics},\"thermal\""
 fi
 
