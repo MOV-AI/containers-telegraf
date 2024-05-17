@@ -36,9 +36,9 @@ if [ "$enable_plugin_thermalthrottle" = "true" ]; then
     metrics="${metrics},\"thermal\""
 fi
 
-if [ -n "$metrics" ] && ! grep linux_cpu /etc/telegraf/telegraf.conf -q; then
+if [ -n "$metrics" ] && ! grep linux_cpu $TELEGRAF_CONFIG_PATH -q; then
     # Include the configuration for the [[inputs.linux_cpu]] plugin
-    cat <<EOF >> /etc/telegraf/telegraf.conf
+    cat <<EOF >> $TELEGRAF_CONFIG_PATH
 
 [[inputs.linux_cpu]]
   host_sys = "/hostfs/sys"
