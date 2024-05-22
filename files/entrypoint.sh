@@ -1,5 +1,6 @@
 #!/bin/sh
 set -e
+TELEGRAF_CONFIG_PATH=/etc/telegraf/telegraf_${TELEGRAF_CONFIG_LEVEL}.conf
 
 # Check if linux_cpu inputs required files exist
 enable_plugin_cpufreq=false
@@ -45,6 +46,8 @@ if [ -n "$metrics" ] && ! grep linux_cpu $TELEGRAF_CONFIG_PATH -q; then
   metrics = [$metrics]
 EOF
 fi
+
+ln -sf $TELEGRAF_CONFIG_PATH /etc/telegraf/telegraf.conf
 
 if [ "${1:0:1}" = '-' ]; then
     set -- telegraf "$@"
