@@ -9,6 +9,11 @@ LABEL maintainer="devops@mov.ai"
 LABEL movai="telegraf"
 LABEL environment=$ENVIRONMENT
 
+# Install additional packages
+RUN command -v apk && apk add --no-cache \
+    chrony=4.5-r0 \
+    && rm -rf /var/cache/apk/*
+
 # Copy configuration files
 COPY files/telegraf_debug.conf /etc/telegraf/telegraf_debug.conf
 COPY files/telegraf_production.conf /etc/telegraf/telegraf_production.conf
