@@ -1,5 +1,7 @@
 #!/bin/sh
 set -e
+export TELEGRAF_CONFIG_PATH=/etc/telegraf/telegraf_${TELEGRAF_CONFIG_LEVEL}.conf
+export TELEGRAF_HOSTNAME=${TELEGRAF_HOSTNAME:"telegraf"}
 
 # Check if linux_cpu inputs required files exist
 enable_plugin_cpufreq=false
@@ -36,15 +38,17 @@ if [ "$enable_plugin_thermalthrottle" = "true" ]; then
     metrics="${metrics},\"thermal\""
 fi
 
-if [ -n "$metrics" ] && ! grep linux_cpu /etc/telegraf/telegraf.conf -q; then
+if [ -n "$metrics" ] && ! grep linux_cpu $TELEGRAF_CONFIG_PATH -q; then
     # Include the configuration for the [[inputs.linux_cpu]] plugin
-    cat <<EOF >> /etc/telegraf/telegraf.conf
+    cat <<EOF >> $TELEGRAF_CONFIG_PATH
 
 [[inputs.linux_cpu]]
   host_sys = "/hostfs/sys"
   metrics = [$metrics]
 EOF
 fi
+
+ln -sf $TELEGRAF_CONFIG_PATH /etc/telegraf/telegraf.conf
 
 if [ "${1:0:1}" = '-' ]; then
     set -- telegraf "$@"
