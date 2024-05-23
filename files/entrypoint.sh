@@ -1,6 +1,7 @@
 #!/bin/sh
 set -e
 TELEGRAF_CONFIG_PATH=/etc/telegraf/telegraf_${TELEGRAF_CONFIG_LEVEL}.conf
+export TELEGRAF_HOSTNAME=${TELEGRAF_HOSTNAME:"telegraf"}
 
 # Check if linux_cpu inputs required files exist
 enable_plugin_cpufreq=false
