@@ -35,7 +35,11 @@ if [ "$enable_plugin_cpufreq" = "true" ]; then
     metrics="\"cpufreq\""
 fi
 if [ "$enable_plugin_thermalthrottle" = "true" ]; then
-    metrics="${metrics},\"thermal\""
+    if [ -n "$metrics" ]; then
+        metrics="${metrics},\"thermal\""
+    else
+        metrics="\"thermal\""
+    fi
 fi
 
 if [ -n "$metrics" ] && ! grep linux_cpu $TELEGRAF_CONFIG_PATH -q; then
