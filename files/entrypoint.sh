@@ -2,6 +2,14 @@
 set -e
 export TELEGRAF_CONFIG_PATH=/etc/telegraf/telegraf_${TELEGRAF_CONFIG_LEVEL}.conf
 export TELEGRAF_HOSTNAME=${TELEGRAF_HOSTNAME:"telegraf"}
+# Check if Redis master server is reachable, fallback to Redis slave
+if nc -z -w 1 redis-master 6379; then
+    echo "Redis master server is reachable, so using it"
+    export REDIS_SERVER=${REDIS_SERVER:-"master"}
+elif nc -z -w 1 redis-slave 6379; then
+    echo "Redis slave server is reachable, so using it"
+    export REDIS_SERVER=${REDIS_SERVER:-"slave"}
+fi
 
 # Check if linux_cpu inputs required files exist
 enable_plugin_cpufreq=false
