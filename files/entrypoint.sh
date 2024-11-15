@@ -11,7 +11,7 @@ for redis_server in $redis_server_options; do
         if [ -z "$redis_servers" ]; then
             redis_servers="\"tcp://$redis_server:6379\""
         else
-            redis_servers="$redis_servers tcp://$redis_server:6379"
+            redis_servers="$redis_servers,\"tcp://$redis_server:6379\""
         fi
     fi
 done
