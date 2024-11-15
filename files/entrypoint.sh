@@ -16,7 +16,7 @@ for redis_server in $redis_server_options; do
     fi
 done
 
-export REDIS_SERVERS=${REDIS_SERVERS:-$(echo "$redis_servers" | sed -e 's/[^ ]\+/"&"/g' -e 's/ /,/g' -e 's/^/[/' -e 's/$/]/')}
+export REDIS_SERVERS="[$redis_servers]"
 
 echo "Using Redis servers: $REDIS_SERVERS"
 
