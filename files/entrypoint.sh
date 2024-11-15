@@ -9,7 +9,7 @@ redis_server_options="redis-local redis-master redis-slave"
 for redis_server in $redis_server_options; do
     if nc -z -w 1 $redis_server 6379 > /dev/null 2>&1; then
         if [ -z "$redis_servers" ]; then
-            redis_servers="tcp://$redis_server:6379"
+            redis_servers="\"tcp://$redis_server:6379\""
         else
             redis_servers="$redis_servers tcp://$redis_server:6379"
         fi
