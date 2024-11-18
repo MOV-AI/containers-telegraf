@@ -2,6 +2,23 @@
 set -e
 export TELEGRAF_CONFIG_PATH=/etc/telegraf/telegraf_${TELEGRAF_CONFIG_LEVEL}.conf
 export TELEGRAF_HOSTNAME=${TELEGRAF_HOSTNAME:"telegraf"}
+# Check if redis servers are available
+redis_servers=""
+redis_server_options="redis-local redis-master redis-slave"
+
+for redis_server in $redis_server_options; do
+    if nc -z -w 1 $redis_server 6379 > /dev/null 2>&1; then
+        if [ -z "$redis_servers" ]; then
+            redis_servers="\"tcp://$redis_server:6379\""
+        else
+            redis_servers="$redis_servers,\"tcp://$redis_server:6379\""
+        fi
+    fi
+done
+
+export REDIS_SERVERS="[$redis_servers]"
+
+echo "Using Redis servers: $REDIS_SERVERS"
 
 # Check if linux_cpu inputs required files exist
 enable_plugin_cpufreq=false
