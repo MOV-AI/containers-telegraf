@@ -44,6 +44,7 @@ Binary:
 
     See https://github.com/influxdata/telegraf/pull/11832/files
 
+```bash
 devices:
       - /dev/nvidiactl:/dev/nvidiactl
       - /dev/nvidia0:/dev/nvidia0
@@ -53,3 +54,4 @@ devices:
       - /usr/lib/x86_64-linux-gnu/nvidia:/usr/lib/x86_64-linux-gnu/nvidia:ro
     environment:
       - LD_PRELOAD=/usr/lib/x86_64-linux-gnu/nvidia/current/libnvidia-ml.so
+```
