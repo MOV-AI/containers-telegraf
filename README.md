@@ -44,7 +44,7 @@ Binary:
 
     See https://github.com/influxdata/telegraf/pull/11832/files
 
-```bash
+```yml
 devices:
       - /dev/nvidiactl:/dev/nvidiactl
       - /dev/nvidia0:/dev/nvidia0
