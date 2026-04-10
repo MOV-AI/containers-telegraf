@@ -12,6 +12,7 @@ LABEL environment=$ENVIRONMENT
 # Install additional packages
 RUN command -v apk && apk add --no-cache \
     chrony=4.6.1-r1 \
+    su-exec \
     && rm -rf /var/cache/apk/*
 
 # Copy configuration files
@@ -24,3 +25,7 @@ ENV TELEGRAF_CONFIG_LEVEL=$ENVIRONMENT
 RUN chmod o+w /etc/telegraf/telegraf_debug.conf /etc/telegraf/telegraf_production.conf \
     && rm -f /etc/telegraf/telegraf.conf \
     && chmod +x /entrypoint.sh
+
+ENTRYPOINT ["/entrypoint.sh"]
+
+CMD [ "telegraf", "--non-strict-env-handling" ]
