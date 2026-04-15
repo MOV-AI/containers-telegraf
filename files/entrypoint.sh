@@ -34,6 +34,7 @@ if [ -d "/sys/devices/system/cpu/cpu0/cpufreq/" ] ; then
         fi
     done
 fi
+echo "Linux CPU plugin cpufreq enabled: $enable_plugin_cpufreq"
 
 enable_plugin_thermalthrottle=false
 thermal_throttle_files="core_throttle_count core_throttle_max_time_ms core_throttle_total_time_ms package_throttle_count package_throttle_max_time_ms package_throttle_total_time_ms"
@@ -47,6 +48,7 @@ if [ -d "/sys/devices/system/cpu/cpu0/thermal_throttle/" ]; then
         fi
     done
 fi
+echo "Linux CPU plugin cpufreq enabled: $enable_plugin_cpufreq"
 
 metrics=""
 if [ "$enable_plugin_cpufreq" = "true" ]; then
@@ -69,8 +71,10 @@ if [ -n "$metrics" ] && ! grep linux_cpu "$TELEGRAF_CONFIG_PATH" -q; then
   metrics = [$metrics]
 EOF
 fi
+echo "Linux CPU plugin metrics enabled: $metrics"
 
 ln -sf "$TELEGRAF_CONFIG_PATH" /etc/telegraf/telegraf.conf
+echo "Using Telegraf configuration: $TELEGRAF_CONFIG_PATH as /etc/telegraf/telegraf.conf"
 
 if [ "${1:0:1}" = '-' ]; then
     set -- telegraf "$@"

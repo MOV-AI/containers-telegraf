@@ -2,9 +2,9 @@
 
 Telegraf container for monitoring various services and applications.
 
-This container is based on the official Telegraf Alpine image and provides 2 configuration files:
-- telegraf_debug.conf: a configuration file with debug metrics collection and a 10s interval
-- telegraf_production.conf: a configuration file with minimal metrics collection and a 30s interval
+This container is based on the official Telegraf Alpine image and provides several configuration profiles:
+- **telegraf_debug.conf**: Full metrics collection (all fields enabled) - use for performance analysis and system debugging
+- **telegraf_production.conf**: Optimized with fieldinclude filters for reduced ingestion - use for production monitoring with resource optimization
 
 Dynamic detection of host comptability for the following plugins:
 - [[inputs.linux_cpu]] cpufreq plugin
@@ -21,11 +21,10 @@ docker build -t telegraf .
 ### Runtime configuration
 
 Environment variables:
-- `TELEGRAF_CONFIG_LEVEL`: the configuration level to use (default: `production`)
-- `TELEGRAF_CONFIG_FILE`: the configuration file to use (default: `/etc/telegraf/telegraf_$TELEGRAF_CONFIG_LEVEL.conf`)
+- `TELEGRAF_CONFIG_LEVEL`: the configuration profile to use (default: `production`; options: `debug`, `production`)
+- `TELEGRAF_CONFIG_FILE`: override the configuration file path (default: `/etc/telegraf/telegraf_$TELEGRAF_CONFIG_LEVEL.conf`)
 - `TELEGRAF_HOSTNAME`: the hostname to use in the InfluxDB output plugin (default: `telegraf`)
-- `CHRONY_URL`: the URL of the Chrony server to monitor (default: disabled)
-- `HA_PROXY_URL`: the URL of the HAProxy server to monitor (default: disabled)
+- `REDIS_SERVERS`: auto-detected from available Redis instances (redis-local, redis-master, redis-slave)
 
 ## Future Work
 
