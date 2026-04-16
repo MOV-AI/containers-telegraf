@@ -48,7 +48,7 @@ if [ -d "/sys/devices/system/cpu/cpu0/thermal_throttle/" ]; then
         fi
     done
 fi
-echo "Linux CPU plugin cpufreq enabled: $enable_plugin_cpufreq"
+echo "Linux CPU plugin thermal_throttle enabled: $enable_plugin_thermalthrottle"
 
 metrics=""
 if [ "$enable_plugin_cpufreq" = "true" ]; then
