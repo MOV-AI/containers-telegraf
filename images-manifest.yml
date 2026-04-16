@@ -5,7 +5,7 @@ images:
     docker_file: ./Dockerfile
     docker_image: qa/telegraf
     public_image: ce/telegraf
-    platforms: linux/amd64, linux/arm/v7, linux/arm64
+    platforms: linux/amd64, linux/arm64
     public: true
     snyk_check: true
     target: null
