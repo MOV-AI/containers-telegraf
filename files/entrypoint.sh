@@ -1,7 +1,8 @@
 #!/bin/sh
 set -e
-export TELEGRAF_CONFIG_PATH=/etc/telegraf/telegraf_${TELEGRAF_CONFIG_LEVEL}.conf
-export TELEGRAF_HOSTNAME=${TELEGRAF_HOSTNAME:"telegraf"}
+export TELEGRAF_CONFIG_PATH="/etc/telegraf/telegraf_${TELEGRAF_CONFIG_LEVEL}.conf"
+export TELEGRAF_HOSTNAME="${TELEGRAF_HOSTNAME:-telegraf}"
+
 # Check if redis servers are available
 redis_servers=""
 redis_server_options="redis-local redis-master redis-slave"
@@ -33,6 +34,7 @@ if [ -d "/sys/devices/system/cpu/cpu0/cpufreq/" ] ; then
         fi
     done
 fi
+echo "Linux CPU plugin cpufreq enabled: $enable_plugin_cpufreq"
 
 enable_plugin_thermalthrottle=false
 thermal_throttle_files="core_throttle_count core_throttle_max_time_ms core_throttle_total_time_ms package_throttle_count package_throttle_max_time_ms package_throttle_total_time_ms"
@@ -46,6 +48,7 @@ if [ -d "/sys/devices/system/cpu/cpu0/thermal_throttle/" ]; then
         fi
     done
 fi
+echo "Linux CPU plugin thermal_throttle enabled: $enable_plugin_thermalthrottle"
 
 metrics=""
 if [ "$enable_plugin_cpufreq" = "true" ]; then
@@ -59,28 +62,45 @@ if [ "$enable_plugin_thermalthrottle" = "true" ]; then
     fi
 fi
 
-if [ -n "$metrics" ] && ! grep linux_cpu $TELEGRAF_CONFIG_PATH -q; then
+if [ -n "$metrics" ] && ! grep linux_cpu "$TELEGRAF_CONFIG_PATH" -q; then
     # Include the configuration for the [[inputs.linux_cpu]] plugin
-    cat <<EOF >> $TELEGRAF_CONFIG_PATH
+    cat <<EOF >> "$TELEGRAF_CONFIG_PATH"
 
 [[inputs.linux_cpu]]
   host_sys = "/hostfs/sys"
   metrics = [$metrics]
 EOF
 fi
+echo "Linux CPU plugin metrics enabled: $metrics"
 
-ln -sf $TELEGRAF_CONFIG_PATH /etc/telegraf/telegraf.conf
+ln -sf "$TELEGRAF_CONFIG_PATH" /etc/telegraf/telegraf.conf
+echo "Using Telegraf configuration: $TELEGRAF_CONFIG_PATH as /etc/telegraf/telegraf.conf"
 
 if [ "${1:0:1}" = '-' ]; then
+    set -- telegraf "$@"
+elif [ "$1" != "telegraf" ]; then
     set -- telegraf "$@"
 fi
 
 if [ "$(id -u)" -ne 0 ]; then
     exec "$@"
 else
-    # Allow telegraf to send ICMP packets and bind to privliged ports
+    # Allow telegraf to send ICMP packets and bind to privileged ports
     setcap cap_net_raw,cap_net_bind_service+ep /usr/bin/telegraf || echo "Failed to set additional capabilities on /usr/bin/telegraf"
 
-    exec su-exec telegraf "$@"
-fi
+    # ensure HOME is set to the telegraf user's home dir
+    export HOME=$(getent passwd telegraf | cut -d : -f 6)
 
+    # honor groups supplied via 'docker run --group-add ...' but drop 'root'
+    # (also removes 'telegraf' since we unconditionally add it and don't want it listed twice)
+    # see https://github.com/influxdata/influxdata-docker/issues/724
+    groups="telegraf"
+    extra_groups="$(id -Gn || true)"
+    for group in $extra_groups; do
+        case "$group" in
+            root | telegraf) ;;
+            *) groups="$groups,$group" ;;
+        esac
+    done
+    exec setpriv --reuid telegraf --regid telegraf --groups "$groups" "$@"
+fi

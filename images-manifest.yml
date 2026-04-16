@@ -1,0 +1,11 @@
+version: 1.4.0
+
+images:
+  - name: telegraf
+    docker_file: ./Dockerfile
+    docker_image: qa/telegraf
+    public_image: ce/telegraf
+    platforms: linux/amd64, linux/arm64
+    public: true
+    snyk_check: true
+    target: null
