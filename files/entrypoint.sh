@@ -2,6 +2,15 @@
 set -e
 export TELEGRAF_CONFIG_PATH="/etc/telegraf/telegraf_${TELEGRAF_CONFIG_LEVEL}.conf"
 export TELEGRAF_HOSTNAME="${TELEGRAF_HOSTNAME:-telegraf}"
+export METRICS_OUTPUT_URL="${METRICS_OUTPUT_URL:-udp://influxdb:9096}"
+INFLUXDB_INPUT_ENABLED="${INFLUXDB_INPUT_ENABLED:-true}"
+
+echo "Using metrics output: $METRICS_OUTPUT_URL"
+
+if [ "$INFLUXDB_INPUT_ENABLED" != "true" ] && [ -f "$TELEGRAF_CONFIG_PATH" ]; then
+    sed -i '/# __INFLUXDB_INPUT_BEGIN__/,/# __INFLUXDB_INPUT_END__/d' "$TELEGRAF_CONFIG_PATH"
+fi
+echo "InfluxDB self-monitoring input enabled: $INFLUXDB_INPUT_ENABLED"
 
 # Check if redis servers are available
 redis_servers=""
