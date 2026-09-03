@@ -11,7 +11,7 @@ LABEL environment=$ENVIRONMENT
 
 # Install additional packages
 RUN command -v apk && apk add --no-cache \
-    chrony=4.6.1-r1 \
+    chrony=4.8-r2 \
     util-linux \
     && rm -rf /var/cache/apk/*
 
