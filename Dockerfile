@@ -1,4 +1,4 @@
-ARG TELEGRAF_VERSION="1.38-alpine"
+ARG TELEGRAF_VERSION="1.39-alpine"
 FROM telegraf:${TELEGRAF_VERSION}
 
 ARG ENVIRONMENT="production"
@@ -11,7 +11,7 @@ LABEL environment=$ENVIRONMENT
 
 # Install additional packages
 RUN command -v apk && apk add --no-cache \
-    chrony=4.6.1-r1 \
+    chrony=4.8-r2 \
     util-linux \
     && rm -rf /var/cache/apk/*
 
@@ -21,6 +21,8 @@ COPY files/telegraf_production.conf /etc/telegraf/telegraf_production.conf
 COPY files/entrypoint.sh /entrypoint.sh
 
 ENV TELEGRAF_CONFIG_LEVEL=$ENVIRONMENT
+ENV METRICS_OUTPUT_URL="udp://influxdb:9096"
+ENV INFLUXDB_INPUT_ENABLED="true"
 
 RUN chmod o+w /etc/telegraf/telegraf_debug.conf /etc/telegraf/telegraf_production.conf \
     && rm -f /etc/telegraf/telegraf.conf \
